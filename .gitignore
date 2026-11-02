@@ -1,6 +1,8 @@
 .gradle
 **/build/
 !**/src/**/build/
+gradle/gradle-daemon-jvm.properties
+.idea/
 
 # Ignore Gradle GUI config
 gradle-app.setting
@@ -19,3 +21,8 @@ gradle-app.setting
 .project
 # JDT-specific (Eclipse Java Development Tools)
 .classpath
+
+# Advent of Code session & inputs
+session.txt
+.env
+.inputs/
