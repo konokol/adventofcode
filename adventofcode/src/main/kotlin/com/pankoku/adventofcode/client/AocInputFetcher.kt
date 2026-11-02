@@ -5,7 +5,7 @@ import okhttp3.Request
 import java.io.IOException
 
 class AocInputFetcher(
-    var year: Int = 2025,
+    var year: Int = 2026,
     private val sessionProvider: SessionProvider = SessionProvider,
     private val cacheManager: InputCacheManager = InputCacheManager(),
     private val httpClient: OkHttpClient = OkHttpClient()

@@ -1,61 +1,96 @@
-# Advent of Code 2025 Input Fetcher Tool - Technical Plan
+# Advent of Code Client & Command Architecture Plan
 
 ## Overview
-This document outlines the design and implementation strategy for an automated Advent of Code input fetcher tool written in Kotlin. The tool downloads puzzle input directly from `adventofcode.com` using OkHttp and caches it locally to avoid unnecessary network requests.
+This document outlines the expanded architecture for the Advent of Code Kotlin tool. Terminal input strings are parsed into executable `AocCommand` domain objects via `AocCommand.Factory` (Factory pattern) and executed by `AocClient`. `AocClient` coordinates puzzle input fetching via `AocInputFetcher` and problem solving via `SolverRegistry`, which lazily loads `DaySolver` instances using `ServiceLoader` on-demand per command execution. `META-INF/services/` entries are generated automatically at build time using Google `@AutoService` and `kapt`.
 
 ---
 
-## Advent of Code Etiquette & Best Practices
-1. **Local Caching (Primary Rule):** Always check if `inputs/{year}/day{day}.txt` exists locally. If present, load directly from disk without hitting the network.
-2. **Custom User-Agent:** Send a custom `User-Agent` header (`AdventOfCode-Kotlin-Fetcher/1.0 (+via github.com/pankoku/adventofcode)`) to identify requests responsibly per AoC guidelines.
-3. **Session Cookie Management:** Securely load session cookie without risking accidental commits of private credentials.
+## 🏗️ System Architecture & Data Flow
+
+```
+[ Terminal Input String ]
+           │
+           ▼
+ [ AocCommand.Factory ] ─────► Creates typed [ AocCommand ]
+           │
+           ▼
+     [ AocClient ] ─────► Executes Command
+     ├── AocInputFetcher (Fetches / Loads cached puzzle inputs)
+     └── SolverRegistry  (Lazy On-Command ServiceLoader lookup & caching)
+```
 
 ---
 
-## Component Architecture
+## 🧩 Component Specifications
 
-### 1. `SessionProvider`
-- **Location:** `adventofcode/src/main/kotlin/com/pankoku/adventofcode/client/SessionProvider.kt`
-- **Responsibility:**
-  - Reads session token from local `session.txt` file (at project root).
-  - Falls back to `AOC_SESSION` environment variable if `session.txt` is missing or empty.
-  - Throws descriptive `IllegalStateException` if neither source yields a valid token.
-
-### 2. `InputCacheManager`
-- **Location:** `adventofcode/src/main/kotlin/com/pankoku/adventofcode/client/InputCacheManager.kt`
-- **Responsibility:**
-  - Target Path: `.inputs/{year}/day{day_padded}.txt` (e.g., `.inputs/2025/day01.txt`).
-  - `hasCache(year: Int, day: Int): Boolean`
-  - `readCache(year: Int, day: Int): String`
-  - `saveCache(year: Int, day: Int, content: String): File`
-
-### 3. `AocInputFetcher`
-- **Location:** `adventofcode/src/main/kotlin/com/pankoku/adventofcode/client/AocInputFetcher.kt`
-- **Responsibility:**
-  - Coordinates cache checking and HTTP fetching via OkHttp (`com.squareup.okhttp3.OkHttpClient`).
-  - Endpoint: `https://adventofcode.com/{year}/day/{day}/input`
-  - Headers:
-    - `Cookie: session=<SESSION_TOKEN>`
-    - `User-Agent: AdventOfCode-Kotlin-Fetcher/1.0`
-  - Handles response status codes:
-    - `200`: Success - caches input and returns content.
-    - `400/403`: Invalid or expired session cookie.
-    - `404`: Puzzle input not unlocked yet.
-  - Methods:
-    - `getInput(day: Int): String`
-    - `getInputLines(day: Int): List<String>`
-
-### 4. `.gitignore` Configuration
-- Ensure sensitive credentials and downloaded inputs are not committed to git:
-  - `session.txt`
-  - `.env`
-  - `.inputs/`
-
----
-
-## Usage Example
+### 1. `AocCommand` & `AocCommand.Factory` (Domain Model & Factory)
+- Location: `adventofcode/src/main/kotlin/com/pankoku/adventofcode/command/AocCommand.kt`
+- Sealed interface representing executable commands created by `AocCommand.Factory`:
 
 ```kotlin
-val fetcher = AocInputFetcher(year = 2025)
-val inputLines = fetcher.getInputLines(day = 1)
+sealed interface AocCommand {
+    data class SetYear(val year: Int) : AocCommand
+    data class FetchInput(val day: Int, val year: Int? = null) : AocCommand
+    data class Solve(val day: Int, val part: Int? = null, val year: Int? = null) : AocCommand
+    data object ShowYear : AocCommand
+    data object Help : AocCommand
+    data object Exit : AocCommand
+    data class Unknown(val rawInput: String, val error: String) : AocCommand
+
+    companion object Factory {
+        fun create(rawInput: String): AocCommand
+    }
+}
 ```
+
+Supported Syntax:
+- `year [y]` — Shows or sets current year (e.g., `year 2024` or `year`).
+- `input <day>` / `fetch <day>` — Fetches or loads puzzle input for specified day.
+- `solve <day> [part]` — Solves puzzle for day (part 1, part 2, or both).
+- `help` — Displays command menu.
+- `exit` / `quit` — Exits the application.
+
+### 2. `DaySolver` & `SolverRegistry` (ServiceLoader On-Command-Loading)
+- Location: `adventofcode/src/main/kotlin/com/pankoku/adventofcode/solver/DaySolver.kt`
+- Interface for day solutions:
+  ```kotlin
+  interface DaySolver {
+      val year: Int
+      val day: Int
+      fun solvePart1(input: String): Any
+      fun solvePart2(input: String): Any
+  }
+  ```
+- Location: `adventofcode/src/main/kotlin/com/pankoku/adventofcode/solver/SolverRegistry.kt`
+- **Lazy ServiceLoader On-Command Loading:** Solvers are not eagerly loaded on app startup. When `getSolver(year, day)` is invoked, `SolverRegistry` checks an in-memory cache. If not found, it triggers `ServiceLoader.load(DaySolver::class.java)` on-demand, filters for the matching `(year, day)` solver, caches it, and returns it.
+
+### 3. Automatic SPI Generation via Google `@AutoService`
+- **Gradle Config:** Enable `kotlin-kapt` plugin and add dependencies `compileOnly("com.google.auto.service:auto-service-annotations:1.1.1")` and `kapt("com.google.auto.service:auto-service:1.1.1")`.
+- **Automatic Code Generation:** Any solution class annotated with `@AutoService(DaySolver::class)` automatically gets registered in `META-INF/services/com.pankoku.adventofcode.solver.DaySolver` during `gradle build` compilation.
+
+```kotlin
+@AutoService(DaySolver::class)
+class Day01Solver : DaySolver {
+    override val year: Int = 2026
+    override val day: Int = 1
+    ...
+}
+```
+
+### 4. `AocClient`
+- Location: `adventofcode/src/main/kotlin/com/pankoku/adventofcode/client/AocClient.kt`
+- Central execution engine holding state (`currentYear`, `inputFetcher`, `solverRegistry`).
+- Method: `fun execute(command: AocCommand): Boolean`
+  - Returns `false` on `Exit` to terminate the loop.
+  - Handles `FetchInput` by invoking `inputFetcher.getInput(day, year)`.
+  - Handles `Solve` by fetching input, finding `DaySolver` via `SolverRegistry`, executing solution, and logging execution time.
+
+### 5. `App.kt` REPL Terminal Loop
+- Location: `adventofcode/src/main/kotlin/com/pankoku/adventofcode/App.kt`
+- Clean terminal loop reading input string, passing it to `AocCommand.create(rawInput)`, and executing via `aocClient.execute(command)`.
+
+---
+
+## 🔒 Etiquette & Caching Reminders
+- Puzzle inputs are cached in `.inputs/{year}/day{day_padded}.txt`.
+- `.inputs/`, `session.txt`, and `.env` remain in `.gitignore`.

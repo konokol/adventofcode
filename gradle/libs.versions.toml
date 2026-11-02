@@ -1,12 +1,13 @@
 [versions]
 jetbrains-kotlin-jvm = "2.4.21"
-
 okhttp = "5.5.1"
+auto-service = "1.1.1"
 
 [libraries]
-
-okhttp = { group = "com.squareup.okhttp3", name="okhttp", version.ref = "okhttp"}
+okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
+auto-service-annotations = { group = "com.google.auto.service", name = "auto-service-annotations", version.ref = "auto-service" }
+auto-service-processor = { group = "com.google.auto.service", name = "auto-service", version.ref = "auto-service" }
 
 [plugins]
 jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrains-kotlin-jvm" }
-
+kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "jetbrains-kotlin-jvm" }
