@@ -1,5 +1,12 @@
 # 🎄 Advent of Code Kotlin Solver & CLI
 
+[![Advent of Code](https://img.shields.io/badge/Advent%20of%20Code-2025-FFFF66?style=flat-square)](https://adventofcode.com)  
+
+[![Language: Kotlin](https://img.shields.io/badge/Language-Kotlin-7F52FF?style=flat-square&logo=kotlin&logoColor=white)](https://kotlinlang.org)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg?style=flat-square)](LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/konokol/adventofcode?style=flat-square)](https://github.com/YOUR_GITHUB_USERNAME/adventofcode/stargazers)
+[![GitHub last commit](https://img.shields.io/github/last-commit/konokol/adventofcode?style=flat-square)](https://github.com/YOUR_GITHUB_USERNAME/adventofcode)
+
 A Kotlin runner for [Advent of Code](https://adventofcode.com/) puzzles with an interactive terminal CLI, automatic input downloader, local caching, and automatic solution discovery.
 
 ---
