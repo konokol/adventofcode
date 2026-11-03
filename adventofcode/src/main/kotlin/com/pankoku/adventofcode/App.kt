@@ -1,10 +1,11 @@
 package com.pankoku.adventofcode
 
 import com.pankoku.adventofcode.client.AocClient
+import com.pankoku.adventofcode.client.AocInputFetcher
 import com.pankoku.adventofcode.command.AocCommand
 
 fun main(args: Array<String>) {
-    val client = AocClient()
+    val client = AocClient(AocInputFetcher(2025))
 
     println("\n")
     println("=========================================")

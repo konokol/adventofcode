@@ -11,15 +11,23 @@ object SessionProvider {
     fun getSessionToken(): String {
         val sessionFile = findSessionFile()
         if (sessionFile != null && sessionFile.exists()) {
-            val token = sessionFile.readText().trim()
-            if (token.isNotBlank()) {
+            val rawToken = sessionFile.readText().trim()
+            if (rawToken.isNotBlank()) {
+                val token = when {
+                    rawToken.contains("session=") -> rawToken.substringAfter("session=").substringBefore(";").trim()
+                    else -> rawToken
+                }
                 return token
             }
         }
 
         val envToken = System.getenv("AOC_SESSION")?.trim()
         if (!envToken.isNullOrBlank()) {
-            return envToken
+            val token = when {
+                envToken.contains("session=") -> envToken.substringAfter("session=").substringBefore(";").trim()
+                else -> envToken
+            }
+            return token
         }
 
         throw IllegalStateException(
