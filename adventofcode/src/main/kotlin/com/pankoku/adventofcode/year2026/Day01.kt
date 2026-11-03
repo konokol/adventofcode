@@ -4,7 +4,7 @@ import com.google.auto.service.AutoService
 import com.pankoku.adventofcode.solver.DaySolver
 
 @AutoService(DaySolver::class)
-class Day01Solver : DaySolver {
+class Day01 : DaySolver {
     override val year: Int = 2026
     override val day: Int = 1
 

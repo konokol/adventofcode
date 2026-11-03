@@ -2,6 +2,8 @@ package com.pankoku.adventofcode.client
 
 import com.pankoku.adventofcode.command.AocCommand
 import com.pankoku.adventofcode.solver.SolverRegistry
+import com.pankoku.adventofcode.utils.green
+import com.pankoku.adventofcode.utils.red
 import kotlin.system.measureTimeMillis
 
 class AocClient(

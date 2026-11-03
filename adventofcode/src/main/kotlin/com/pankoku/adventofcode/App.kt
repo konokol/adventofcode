@@ -11,10 +11,10 @@ fun main(args: Array<String>) {
     println("      Welcome to Advent of Code!         ")
     println("=========================================")
     println("Active year: ${client.year}")
-    println("Type 'help' for available commands, or 'exit' to quit.\n")
+    println("Type 'help' for available commands, or 'exit' to quit.")
 
     while (true) {
-        println("> ")
+        print("> ")
         val rawInput = readlnOrNull() ?: break
         val command = AocCommand.create(rawInput)
 
