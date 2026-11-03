@@ -35,13 +35,19 @@ class AocInputFetcher(
     }
 
     private fun fetchFromNetwork(day: Int, targetYear: Int): String {
-        val sessionToken = sessionProvider.getSessionToken()
+        val rawToken = sessionProvider.getSessionToken()
+        val cookieHeader = if (rawToken.startsWith("session=") || rawToken.contains("=")) {
+            rawToken
+        } else {
+            "session=$rawToken"
+        }
+
         val url = "https://adventofcode.com/$targetYear/day/$day/input"
 
         val request = Request.Builder()
             .url(url)
-            .header("Cookie", "session=$sessionToken")
-            .header("User-Agent", "AdventOfCode-Kotlin-Fetcher/1.0 (+via github.com/pankoku/adventofcode)")
+            .header("Cookie", cookieHeader)
+            .header("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36")
             .build()
 
         val response = try {
@@ -52,9 +58,33 @@ class AocInputFetcher(
 
         response.use { resp ->
             val bodyString = resp.body.string()
+            val wafAction = resp.header("x-amzn-waf-action")
+
+            if (resp.isSuccessful && bodyString.isNotBlank() && wafAction == null) {
+                return bodyString
+            }
+
+            if (resp.code == 202 || wafAction == "challenge" || bodyString.isBlank()) {
+                val paddedDay = String.format("%02d", day)
+                throw IllegalStateException(
+                    """
+                    AWS WAF Bot Challenge triggered (HTTP 202 / empty response).
+
+                    How to fix:
+                      Option 1 (Network Fetching):
+                        Open DevTools (F12) on https://adventofcode.com in your browser,
+                        copy the full 'Cookie' header (including 'aws-waf-token=...'),
+                        and paste it into `session.txt`.
+
+                      Option 2 (Manual Input):
+                        Open https://adventofcode.com/$targetYear/day/$day/input in your browser,
+                        and save the input text directly to:
+                        .inputs/$targetYear/day$paddedDay.txt
+                    """.trimIndent()
+                )
+            }
 
             when (resp.code) {
-                200 -> return bodyString
                 400, 403 -> throw IllegalStateException(
                     "Authentication failed (HTTP ${resp.code}). Your Advent of Code session token may be invalid or expired."
                 )

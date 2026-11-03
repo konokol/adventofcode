@@ -13,28 +13,20 @@ object SessionProvider {
         if (sessionFile != null && sessionFile.exists()) {
             val rawToken = sessionFile.readText().trim()
             if (rawToken.isNotBlank()) {
-                val token = when {
-                    rawToken.contains("session=") -> rawToken.substringAfter("session=").substringBefore(";").trim()
-                    else -> rawToken
-                }
-                return token
+                return rawToken
             }
         }
 
         val envToken = System.getenv("AOC_SESSION")?.trim()
         if (!envToken.isNullOrBlank()) {
-            val token = when {
-                envToken.contains("session=") -> envToken.substringAfter("session=").substringBefore(";").trim()
-                else -> envToken
-            }
-            return token
+            return envToken
         }
 
         throw IllegalStateException(
             """
             Advent of Code session token not found!
             Please either:
-              1. Create a `session.txt` file in the project root directory containing your session token.
+              1. Create a `session.txt` file in the project root directory containing your session cookie.
               2. Set the `AOC_SESSION` environment variable.
             """.trimIndent()
         )

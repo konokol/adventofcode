@@ -53,7 +53,7 @@ class AocClient(
                 }
 
                 try {
-                    val input = inputFetcher.getInput(day, targetYear)
+                    val input = inputFetcher.getInput(day, targetYear).trimIndent()
                     if (command.part == null || command.part == 1) {
                         var res1: Any?
                         val time1 = measureTimeMillis {
@@ -70,6 +70,7 @@ class AocClient(
                     }
                 } catch (e: Exception) {
                     println("Error solving Year $targetYear Day $day: ${e.message}")
+                    e.printStackTrace()
                 }
             }
             is AocCommand.Help -> {
