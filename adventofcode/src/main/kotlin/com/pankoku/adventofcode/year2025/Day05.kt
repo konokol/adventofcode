@@ -40,11 +40,12 @@ class Day05 : DaySolver {
 
     override fun solvePart1(input: String): String {
         val (ranges, ids) = resolveInput(input)
-        val ans = freshIngredient(ranges, ids).toString().green()
-        return "\nProcessed ${ranges.size} ranges and ${ids.size} ids. $ans available ingredient IDs are fresh."
+        val ans = freshIngredientInRange1(ranges, ids).toString().green()
+        return "\nProcessed ${ranges.size} ranges and ${ids.size} ids for part 1. " +
+                "$ans available ingredient IDs are fresh."
     }
 
-    fun freshIngredient(ranges: List<LongRange>, ids: List<Long>): Int {
+    fun freshIngredientInRange1(ranges: List<LongRange>, ids: List<Long>): Int {
         val merged = mergerRanges(ranges)
         val sum = ids.count { find(merged, it) }
         return sum
@@ -97,5 +98,17 @@ class Day05 : DaySolver {
         }
         list.add(start..end)
         return list
+    }
+
+    override fun solvePart2(input: String): Any {
+        val (ranges, ids) = resolveInput(input)
+        val ans = freshIngredientInRange2(ranges).toString().green()
+        return "\nProcessed ${ranges.size} ranges for part 2. " +
+                "$ans ingredient IDs are considered to be fresh according to the fresh ingredient ID ranges."
+    }
+
+    private fun freshIngredientInRange2(ranges: List<LongRange>): Long {
+        val merged = mergerRanges(ranges)
+        return merged.sumOf { it.last - it.first + 1 }
     }
 }
