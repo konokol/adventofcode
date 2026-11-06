@@ -101,7 +101,7 @@ class Day05 : DaySolver {
     }
 
     override fun solvePart2(input: String): Any {
-        val (ranges, ids) = resolveInput(input)
+        val (ranges) = resolveInput(input)
         val ans = freshIngredientInRange2(ranges).toString().green()
         return "\nProcessed ${ranges.size} ranges for part 2. " +
                 "$ans ingredient IDs are considered to be fresh according to the fresh ingredient ID ranges."
