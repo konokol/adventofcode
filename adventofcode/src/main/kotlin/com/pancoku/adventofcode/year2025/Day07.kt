@@ -65,4 +65,38 @@ class Day07 : DaySolver {
             Thread.sleep(1000)
         }
     }
+
+    override fun solvePart2(input: String): String {
+        val lines = input.lines()
+            .filter { it.isNotBlank() }
+            .map { it.toCharArray() }
+        val answer = countOfTimelines(lines).toString().green()
+        return "\nProcessed ${lines.size} lines. The beam be split $answer times."
+    }
+
+    private fun countOfTimelines(lines: List<CharArray>): Long {
+        // dp[row][col] means how many tachyon reached here
+        val dp = Array(lines.size) { LongArray(lines[0].size) { 0 } }
+        val start = lines.first().indexOf('S')
+        dp[0][start] = 1
+
+        for (r in 0 until lines.size - 1) {
+            for (c in lines[0].indices) {
+                if (dp[r][c] == 0L) continue
+                if (lines[r + 1][c] == '.') {
+                    // go through
+                    dp[r + 1][c] += dp[r][c]
+                } else if (lines[r + 1][c] == '^') {
+                    // split
+                    if (c - 1 in lines[0].indices) {
+                        dp[r + 1][c - 1] += dp[r][c]
+                    }
+                    if (c + 1 in lines[0].indices) {
+                        dp[r + 1][c + 1] += dp[r][c]
+                    }
+                }
+            }
+        }
+        return dp.last().sum()
+    }
 }
