@@ -1,5 +1,6 @@
 plugins {
-    id("java-library")
+    id("java")
+    id("application")
     alias(libs.plugins.jetbrains.kotlin.jvm)
     kotlin("kapt")
 }
@@ -13,6 +14,14 @@ kotlin {
     compilerOptions {
         jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
     }
+}
+
+application {
+    mainClass.set("com.pancoku.adventofcode.AppKt")
+}
+
+tasks.named<JavaExec>("run") {
+    standardInput = System.`in`
 }
 
 dependencies {

@@ -34,9 +34,8 @@ session=your_session_cookie_here
 ### 2. Run the Application
 
 ```bash
-./gradlew run
+./gradlew :adventofcode:run --console=plain
 ```
-
 ---
 
 ## 🕹️ CLI Commands
