@@ -94,4 +94,41 @@ class Day08 : DaySolver {
             .fold(1L) { acc, size -> acc * size }
     }
 
+    override fun solvePart2(input: String): String {
+        val points = input.lines()
+            .filter { it.isNotBlank() }
+            .map {
+                val (x, y, z) = it.split(',').map { n -> n.trim().toLong() }
+                Point(x, y, z)
+            }
+        val answer = solve2(points)
+        return "\nProcessed ${points.size} lines. The answer is $answer."
+    }
+
+    private fun solve2(points: List<Point>) : Long{
+        val edges = mutableListOf<Edge>()
+        for (i in points.indices) {
+            for (j in i + 1 until points.size) {
+                val dx = (points[i].x - points[j].x)
+                val dy = (points[i].y - points[j].y)
+                val dz = (points[i].z - points[j].z)
+                edges.add(Edge(i, j, dx * dx + dy * dy + dz * dz))
+            }
+        }
+        edges.sortBy { it.distance }
+
+        val uf = UnionFind(points.size)
+        var result = 0L
+
+        for ((u, v) in edges) {
+            if (uf.union(u, v)) {
+                if (uf.components == 1) {
+                    result = (points[u].x * points[v].x)
+                    break
+                }
+            }
+        }
+        return result
+    }
+
 }
