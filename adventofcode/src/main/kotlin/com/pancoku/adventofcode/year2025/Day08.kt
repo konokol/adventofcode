@@ -18,11 +18,11 @@ class Day08 : DaySolver {
     override val day = 8
     override val year = 2025
 
-    data class Point(val x: Long, val y: Long, val z: Long)
+    private data class Point(val x: Long, val y: Long, val z: Long)
 
-    data class Edge(val u: Int, val v: Int, val distance: Long)
+    private data class Edge(val u: Int, val v: Int, val distance: Long)
 
-    class UnionFind(val size: Int) {
+    private class UnionFind(val size: Int) {
         private val parent = IntArray(size) { i -> i }
         private val rank = IntArray(size) { 0 }
         val componentSize = IntArray(size) { 1 }
@@ -53,7 +53,6 @@ class Day08 : DaySolver {
             components--
             return true
         }
-
     }
 
     override fun solvePart1(input: String): String {
