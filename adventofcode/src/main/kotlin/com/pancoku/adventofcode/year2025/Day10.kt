@@ -104,9 +104,9 @@ class Day10 : DaySolver {
         operator fun times(o: Fraction) = Fraction(num * o.num, den * o.den).normalized
         operator fun div(o: Fraction) = Fraction(num * o.den, den * o.num).normalized
 
-        fun isZero() = num == BigInteger.ZERO
-        fun isNonNegativeInt() = den == BigInteger.ONE && num >= BigInteger.ZERO
-        fun toLong() = num.toLong()
+        fun isZero() = normalized.num == BigInteger.ZERO
+        fun isNonNegativeInt() = normalized.den == BigInteger.ONE && normalized.num >= BigInteger.ZERO
+        fun toLong() = normalized.num.toLong()
     }
 
 

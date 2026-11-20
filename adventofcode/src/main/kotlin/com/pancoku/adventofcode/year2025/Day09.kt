@@ -17,12 +17,12 @@ import kotlin.math.min
  * 
  */
 @AutoService(DaySolver::class)
-class Day09: DaySolver {
+class Day09 : DaySolver {
 
     override val day = 9
     override val year = 2025
 
-    private data class Point(val x: Long, val y: Long)
+    internal data class Point(val x: Long, val y: Long)
 
     override fun solvePart1(input: String): String {
         val points = input.trim()
@@ -36,8 +36,8 @@ class Day09: DaySolver {
         return "\nProcessed ${points.size} pointes for part 1. The answer is $answer."
     }
 
-    private fun maxArea(points: List<Point>): Long {
-        var maxArea= 0L
+    internal fun maxArea(points: List<Point>): Long {
+        var maxArea = 0L
         for (i in points.indices) {
             for (j in i + 1..<points.size) {
                 maxArea = max(maxArea, abs(points[i].x - points[j].x + 1) * abs(points[i].y - points[j].y + 1))
@@ -58,7 +58,7 @@ class Day09: DaySolver {
         return "\nProcessed ${points.size} pointes for part 2. The answer is $answer."
     }
 
-    private fun maxArea2(points: List<Point>): Long {
+    internal fun maxArea2(points: List<Point>): Long {
         // 1. compress
         val xs = compressCoords(points.map { it.x })
         val ys = compressCoords(points.map { it.y })
@@ -137,7 +137,7 @@ class Day09: DaySolver {
         return maxArea
     }
 
-    private fun compressCoords(coords: List<Long>): List<Long> {
+    internal fun compressCoords(coords: List<Long>): List<Long> {
         val unique = coords.distinct().sorted()
         val result = mutableListOf<Long>()
         result.add(unique.first() - 1)
@@ -150,5 +150,4 @@ class Day09: DaySolver {
         result.add(unique.last() + 1)
         return result
     }
-
 }

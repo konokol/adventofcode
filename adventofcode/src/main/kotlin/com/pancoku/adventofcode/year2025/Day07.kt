@@ -29,7 +29,7 @@ class Day07 : DaySolver {
         return "\nProcessed ${lines.size} lines. The beam be split $answer times."
     }
 
-    private fun splitBeam(lines: List<CharArray>): Int {
+    internal fun splitBeam(lines: List<CharArray>): Int {
         print(lines)
         var sum = 0
         for (r in 0 until lines.size - 1) {
@@ -59,7 +59,7 @@ class Day07 : DaySolver {
         return sum
     }
 
-    private fun print(lines: List<CharArray>) {
+    internal fun print(lines: List<CharArray>) {
         if (DEBUG) {
             println(lines.joinToString("\n") { charArray -> String(charArray) })
             Thread.sleep(1000)
@@ -74,7 +74,7 @@ class Day07 : DaySolver {
         return "\nProcessed ${lines.size} lines. The beam be split $answer times."
     }
 
-    private fun countOfTimelines(lines: List<CharArray>): Long {
+    internal fun countOfTimelines(lines: List<CharArray>): Long {
         // dp[row][col] means how many tachyon reached here
         val dp = Array(lines.size) { LongArray(lines[0].size) { 0 } }
         val start = lines.first().indexOf('S')
