@@ -1,6 +1,8 @@
 package com.pancoku.adventofcode.year2025
 
 import com.google.auto.service.AutoService
+import com.pancoku.adventofcode.solver.AOC
+import com.pancoku.adventofcode.solver.AbsDaySolver
 import com.pancoku.adventofcode.solver.DaySolver
 import com.pancoku.adventofcode.utils.green
 import okhttp3.internal.toLongOrDefault
@@ -16,10 +18,8 @@ import kotlin.math.max
  * 
  */
 @AutoService(DaySolver::class)
-class Day05 : DaySolver {
-
-    override val day = 5
-    override val year = 2025
+@AOC(year = 2025, day = 5)
+class Day05 : AbsDaySolver() {
 
     private data class Input(val ranges: List<LongRange>, val ids: List<Long>)
 

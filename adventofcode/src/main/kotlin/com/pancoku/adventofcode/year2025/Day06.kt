@@ -1,6 +1,8 @@
 package com.pancoku.adventofcode.year2025
 
 import com.google.auto.service.AutoService
+import com.pancoku.adventofcode.solver.AOC
+import com.pancoku.adventofcode.solver.AbsDaySolver
 import com.pancoku.adventofcode.solver.DaySolver
 import com.pancoku.adventofcode.utils.green
 
@@ -14,10 +16,8 @@ import com.pancoku.adventofcode.utils.green
  * 
  */
 @AutoService(DaySolver::class)
-class Day06 : DaySolver {
-
-    override val day = 6
-    override val year = 2025
+@AOC(year = 2025, day = 6)
+class Day06 : AbsDaySolver() {
 
     override fun solvePart1(input: String): String {
         val allLines = input.lines().filter { it.isNotBlank() }
@@ -49,7 +49,7 @@ class Day06 : DaySolver {
         for (row in nums.indices) {
             val op = ops[row]
             var grand: Long = -1L
-            for (col in nums[row].indices) {
+            for (col in nums[0].indices) {
                 grand = if (grand == -1L) {
                     nums[row][col]
                 } else {
@@ -60,7 +60,7 @@ class Day06 : DaySolver {
                     }
                 }
             }
-            println("Col ${row}: ${nums[row].joinToString(op)}=$grand")
+            println("The grand is $grand for column $row.")
             sum += grand
         }
         return sum
@@ -81,11 +81,13 @@ class Day06 : DaySolver {
             }
             if (builder.trim().isEmpty()) {
                 nums.add(list)
+                println(list)
                 list = null
             } else {
                 list.add(builder.trim().toString().toLong())
                 if (c == 0) {
                     nums.add(list)
+                    println(list)
                     list = null
                 }
             }

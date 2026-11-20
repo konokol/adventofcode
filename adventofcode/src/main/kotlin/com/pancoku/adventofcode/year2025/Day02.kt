@@ -1,6 +1,8 @@
 package com.pancoku.adventofcode.year2025
 
 import com.google.auto.service.AutoService
+import com.pancoku.adventofcode.solver.AOC
+import com.pancoku.adventofcode.solver.AbsDaySolver
 import com.pancoku.adventofcode.solver.DaySolver
 import com.pancoku.adventofcode.utils.green
 
@@ -14,10 +16,8 @@ import com.pancoku.adventofcode.utils.green
  * 
  */
 @AutoService(DaySolver::class)
-class Day02 : DaySolver {
-
-    override val year: Int = 2025
-    override val day: Int = 2
+@AOC(year = 2025, day = 2)
+class Day02 : AbsDaySolver() {
 
     override fun solvePart1(input: String): String {
         val ranges = input.trim().split(",").map { it.trim() }.filter { it.isNotBlank() }

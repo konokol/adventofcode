@@ -1,6 +1,8 @@
 package com.pancoku.adventofcode.year2025
 
 import com.google.auto.service.AutoService
+import com.pancoku.adventofcode.solver.AOC
+import com.pancoku.adventofcode.solver.AbsDaySolver
 import com.pancoku.adventofcode.solver.DaySolver
 
 /**
@@ -13,10 +15,8 @@ import com.pancoku.adventofcode.solver.DaySolver
  * 
  */
 @AutoService(DaySolver::class)
-class Day08 : DaySolver {
-
-    override val day = 8
-    override val year = 2025
+@AOC(year = 2025, day = 8)
+class Day08 : AbsDaySolver() {
 
     private data class Point(val x: Long, val y: Long, val z: Long)
 
@@ -66,7 +66,7 @@ class Day08 : DaySolver {
         return "\nProcessed ${points.size} lines. The answer is $answer."
     }
 
-    private fun solve1(points: List<Point>) : Long{
+    private fun solve1(points: List<Point>) : Long {
         val edges = mutableListOf<Edge>()
         for (i in points.indices) {
             for (j in i + 1 until points.size) {
@@ -104,7 +104,7 @@ class Day08 : DaySolver {
         return "\nProcessed ${points.size} lines. The answer is $answer."
     }
 
-    private fun solve2(points: List<Point>) : Long{
+    private fun solve2(points: List<Point>) : Long {
         val edges = mutableListOf<Edge>()
         for (i in points.indices) {
             for (j in i + 1 until points.size) {
@@ -129,5 +129,4 @@ class Day08 : DaySolver {
         }
         return result
     }
-
 }

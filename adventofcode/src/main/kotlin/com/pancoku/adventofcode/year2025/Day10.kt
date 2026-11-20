@@ -1,6 +1,8 @@
 package com.pancoku.adventofcode.year2025
 
 import com.google.auto.service.AutoService
+import com.pancoku.adventofcode.solver.AOC
+import com.pancoku.adventofcode.solver.AbsDaySolver
 import com.pancoku.adventofcode.solver.DaySolver
 import com.pancoku.adventofcode.utils.green
 import java.math.BigInteger
@@ -16,10 +18,8 @@ import kotlin.math.min
  * 
  */
 @AutoService(DaySolver::class)
-class Day10 : DaySolver {
-
-    override val day = 10
-    override val year = 2025
+@AOC(year = 2025, day = 10)
+class Day10 : AbsDaySolver() {
 
     data class Machine(
         val targetMask: Int,

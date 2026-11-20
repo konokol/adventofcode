@@ -1,6 +1,8 @@
 package com.pancoku.adventofcode.year2025
 
 import com.google.auto.service.AutoService
+import com.pancoku.adventofcode.solver.AOC
+import com.pancoku.adventofcode.solver.AbsDaySolver
 import com.pancoku.adventofcode.solver.DaySolver
 import com.pancoku.adventofcode.utils.green
 import kotlin.math.abs
@@ -17,10 +19,8 @@ import kotlin.math.min
  * 
  */
 @AutoService(DaySolver::class)
-class Day09 : DaySolver {
-
-    override val day = 9
-    override val year = 2025
+@AOC(year = 2025, day = 9)
+class Day09 : AbsDaySolver() {
 
     internal data class Point(val x: Long, val y: Long)
 
